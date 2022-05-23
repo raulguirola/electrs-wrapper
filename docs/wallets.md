@@ -1,3 +1,4 @@
+# Tested Wallets
 
 ## BitBox App
 
@@ -20,6 +21,10 @@ Available for:
 - iOS (Not currently supported due to bugs in the app)
 
 [Setup guide](./integrations/bluewallet/guide.md)
+
+## Coinomi
+
+**Not supported - requires Tor support by Coinomi team**
 
 ## Electrum
 
