@@ -38,6 +38,10 @@ Available for:
 
 [Setup guide](./integrations/electrum/guide.md)
 
+## Muun
+
+**Not supported - requires electrum support and Tor support by Muun team (https://github.com/muun/apollo/issues/83)**
+
 ## Sparrow
 
 https://sparrowwallet.com/download/
