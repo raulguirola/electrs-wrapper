@@ -14,8 +14,13 @@ RUN cargo install --locked --path .
 FROM debian:buster-slim
 
 RUN apt update && apt install -y bash curl netcat tini wget
-RUN wget https://github.com/mikefarah/yq/releases/download/v4.23.1/yq_linux_arm.tar.gz -O - |\
-    tar xz && mv yq_linux_arm /usr/bin/yq
+
+ARG PLATFORM
+
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${PLATFORM} && chmod +x /usr/local/bin/yq
+
+# RUN wget https://github.com/mikefarah/yq/releases/download/v4.23.1/yq_linux_arm.tar.gz -O - |\
+#     tar xz && mv yq_linux_arm /usr/bin/yq
 
 COPY --from=builder /usr/local/cargo/bin/electrs /bin/electrs
 
