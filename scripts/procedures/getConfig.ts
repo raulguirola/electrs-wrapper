@@ -1,5 +1,4 @@
-import { types as T, compat } from "../deps.ts";
-
+import { compat, types as T } from "../deps.ts";
 
 export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
   "electrum-tor-address": {
@@ -9,7 +8,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
     "subtype": "package",
     "package-id": "electrs",
     "target": "tor-address",
-    "interface": "electrum"
+    "interface": "electrum",
   },
   "bitcoind": {
     "type": "union",
@@ -22,7 +21,8 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
         "internal": "Bitcoin Core",
         "internal-proxy": "Bitcoin Proxy",
       },
-      "description": "Options<ul><li>Bitcoin Core: the Bitcoin Core node installed on your Embassy</li><li>Bitcoin Proxy: the Bitcoin Proxy service installed on your Embassy</li></ul>",
+      "description":
+        "Options<ul><li>Bitcoin Core: the Bitcoin Core node installed on your Embassy</li><li>Bitcoin Proxy: the Bitcoin Proxy service installed on your Embassy</li></ul>",
     },
     "default": "internal-proxy",
     "variants": {
@@ -35,7 +35,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           "package-id": "bitcoind",
           "target": "config",
           "multi": false,
-          "selector": "$.rpc.username"
+          "selector": "$.rpc.username",
         },
         "password": {
           "type": "pointer",
@@ -45,8 +45,8 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           "package-id": "bitcoind",
           "target": "config",
           "multi": false,
-          "selector": "$.rpc.password"
-        }
+          "selector": "$.rpc.password",
+        },
       },
       "internal-proxy": {
         "user": {
@@ -57,7 +57,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           "package-id": "btc-rpc-proxy",
           "target": "config",
           "multi": false,
-          "selector": "$.users[?(@.name == \"electrs\")].name"
+          "selector": '$.users[?(@.name == "electrs")].name',
         },
         "password": {
           "type": "pointer",
@@ -67,10 +67,10 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           "package-id": "btc-rpc-proxy",
           "target": "config",
           "multi": false,
-          "selector": "$.users[?(@.name == \"electrs\")].password"
-        }
-      }
-    }
+          "selector": '$.users[?(@.name == "electrs")].password',
+        },
+      },
+    },
   },
   "advanced": {
     "type": "object",
@@ -85,35 +85,37 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           "WARN",
           "INFO",
           "DEBUG",
-          "TRACE"
+          "TRACE",
         ],
         "value-names": {
           "ERROR": "Error",
           "WARN": "Warning",
           "INFO": "Info",
           "DEBUG": "Debug",
-          "TRACE": "Trace"
+          "TRACE": "Trace",
         },
-        "default": "INFO"
+        "default": "INFO",
       },
       "index-batch-size": {
         "type": "number",
         "name": "Index Batch Size",
-        "description": "Maximum number of blocks to request from bitcoind per batch\n",
+        "description":
+          "Maximum number of blocks to request from bitcoind per batch\n",
         "nullable": true,
         "range": "[1,10000]",
         "integral": true,
-        "units": "blocks"
+        "units": "blocks",
       },
       "index-lookup-limit": {
         "type": "number",
         "name": "Index Lookup Limit",
-        "description": "Number of transactions to lookup before returning an error, to prevent 'too popular' addresses from causing the RPC server to get stuck (0 - disable the limit)\"\n",
+        "description":
+          "Number of transactions to lookup before returning an error, to prevent 'too popular' addresses from causing the RPC server to get stuck (0 - disable the limit)\"\n",
         "nullable": true,
         "range": "[1,10000]",
         "integral": true,
-        "units": "transactions"
-      }
-    }
-  }
-})
+        "units": "transactions",
+      },
+    },
+  },
+});

@@ -1,4 +1,4 @@
-import { types as T, matches } from "../deps.ts";
+import { matches, types as T } from "../deps.ts";
 
 const { shape, arrayOf, string, boolean } = matches;
 
@@ -11,8 +11,8 @@ const matchProxyConfig = shape({
         password: string,
         "fetch-blocks": boolean,
       },
-      ["fetch-blocks"]
-    )
+      ["fetch-blocks"],
+    ),
   ),
 });
 
@@ -29,7 +29,8 @@ function randomItemString(input: string) {
 }
 
 const serviceName = "electrs";
-const fullChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const fullChars =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 type Check = {
   currentError(config: T.Config): string | void;
   fix(config: T.Config): void;
@@ -48,7 +49,7 @@ const proxyChecks: Array<Check> = [
     },
     fix(config) {
       if (!matchProxyConfig.test(config)) {
-        return
+        return;
       }
       config.users.push({
         name: serviceName,
@@ -65,14 +66,16 @@ const proxyChecks: Array<Check> = [
     "getnetworkinfo",
     "getrawmempool",
     "getrawtransaction",
-
   ].map(
     (operator): Check => ({
       currentError(config) {
         if (!matchProxyConfig.test(config)) {
           return "Config is not the correct shape";
         }
-        if (config.users.find((x) => x.name === serviceName)?.["allowed-calls"]?.some((x) => x === operator) ?? false) {
+        if (
+          config.users.find((x) => x.name === serviceName)?.["allowed-calls"]
+            ?.some((x) => x === operator) ?? false
+        ) {
           return;
         }
         return `RPC user "${serviceName}" must have "${operator}" enabled`;
@@ -87,7 +90,7 @@ const proxyChecks: Array<Check> = [
         }
         found["allowed-calls"] = [...(found["allowed-calls"] ?? []), operator];
       },
-    })
+    }),
   ),
 ];
 
@@ -104,7 +107,6 @@ const matchBitcoindConfig = shape({
     }),
   }),
 });
-
 
 const bitcoindChecks: Array<Check> = [
   {
