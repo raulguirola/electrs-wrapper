@@ -16,12 +16,12 @@ FROM debian:buster-slim
 RUN apt update && apt install -y bash curl netcat tini wget
 
 ARG PLATFORM
-
+ARG ARCH
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${PLATFORM} && chmod +x /usr/local/bin/yq
 
 COPY --from=builder /usr/local/cargo/bin/electrs /bin/electrs
 
-ADD ./configurator/target/aarch64-unknown-linux-musl/release/configurator /usr/local/bin/configurator
+ADD ./configurator/target/${ARCH}-unknown-linux-musl/release/configurator /usr/local/bin/configurator
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 ADD ./check-electrum.sh /usr/local/bin/check-electrum.sh
