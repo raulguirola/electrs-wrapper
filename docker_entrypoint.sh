@@ -35,4 +35,4 @@ data:
 EOF
 
 configurator
-exec tini electrs
+exec tini -s electrs
