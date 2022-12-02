@@ -1,6 +1,6 @@
 id: electrs
 title: "electrs"
-version: 0.9.9.1
+version: 0.9.9.2
 release-notes: |
   * Use new eOS 0.3.3 APIs
 license: mit
@@ -87,7 +87,7 @@ dependencies:
       auto-configure:
         type: script
   bitcoind:
-    version: ">=0.21.1.2 <24.0.0"
+    version: ">=0.21.1.2 <26.0.0"
     requirement:
       type: "opt-out"
       how: Set "Bitcoin Core" type to "External"
