@@ -30,17 +30,31 @@ if [ "$b_block_count" = "null" ]; then
     exit 60
 else
     features_res=$(echo '{"jsonrpc": "2.0", "method": "server.features", "params": ["", "1.4"], "id": 0}' | netcat -q 1 127.0.0.1 50001)
-    synced_height=$(curl -sS localhost:4224 | grep index_height | grep tip | awk '{ print $NF }')
+    #This doesn't ever seem to correspond to actual compaction events.  We'll determine compaction another way.
+    #compaction_res=$(echo -e "$features_res" | grep num-running-compactions | sed "s/\s$//g" | grep " [^0]$"|awk '{print $NF}'|head -1)
+    curl_res=$(curl -sS localhost:4224)
     error_code=$?
-    if [ $error_code -ne 0 ]; then
-        echo $synced_height >&2
+    
+    if [[ $error_code -ne 0 ]]; then
+        echo "Error contacting the Electrs Prometheus RPC" >&2
         exit $error_code
     fi
 
-    if [[ $synced_height -lt $b_block_count ]]; then
-        echo "Catching up to blocks from bitcoind. This should take at most a day. Progress: $synced_height of $b_block_count blocks" >&2
-        exit 61
-    elif [ -z $features_res ]; then
+    synced_height=$(echo -e "$features_res" | grep index_height | grep tip | awk '{ print $NF }')
+    if [ -n "$synced_height" ] && [[ $synced_height -ge 0 ]] ; then
+        if [[ $synced_height -lt $b_block_count ]]; then
+            echo "Catching up to blocks from bitcoind. This should take at most a day. Progress: $synced_height of $b_block_count blocks" >&2
+            exit 61
+        else
+            echo "Electrs RPC is not yet returning the sync status" >&2
+            exit 61
+        fi
+    elif [ -z "$features_res" ]; then
+        compaction_res=$(tail -2 /data/db/bitcoin/LOG|head -1|grep "compaction_job\.cc"|wc -l)
+        if [[ $compaction_res -eq 1 ]] ; then
+            echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
+            exit 61
+        fi
         echo "Synced to blockchain. Finalizing..." >&2
         exit 61
     else
