@@ -1,6 +1,6 @@
 id: electrs
 title: "electrs"
-version: 0.9.9.1
+version: 0.9.11
 release-notes: |
   * Add x86 build
   * Expand version boundaries for bitcoind dependency
