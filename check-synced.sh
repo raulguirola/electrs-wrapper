@@ -18,7 +18,7 @@ else
 fi
 b_gbc_result=$(curl -sS --user $b_username:$b_password --data-binary '{"jsonrpc": "1.0", "id": "sync-hck", "method": "getblockcount", "params": []}' -H 'content-type: text/plain;' http://$b_host:8332/)
 error_code=$?
-if [[] $error_code -ne 0 ]]; then
+if [[ $error_code -ne 0 ]]; then
     echo $b_gbc_result >&2
     exit $error_code
 fi
