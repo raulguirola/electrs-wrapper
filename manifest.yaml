@@ -2,7 +2,7 @@ id: electrs
 title: "electrs"
 version: 0.9.11
 release-notes: |
-  * Update upstream Electrs to v0.9.11
+  * Update upstream electrs to v0.9.11
   * Add compaction notification and one bug fix in the wrapper's health check
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
@@ -59,7 +59,7 @@ volumes:
 interfaces:
   electrum:
     name: Electrum Interface
-    description: DO NOT USE the Tor Address below, it won't work.  Instead, look in Electrs' PROPERTIES.
+    description: Do not use the URL below.  Instead, look in electrs' Properties section for your electrum server address.
     tor-config:
       port-mapping:
         50001: "50001"
