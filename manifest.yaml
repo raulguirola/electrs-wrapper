@@ -1,9 +1,9 @@
 id: electrs
 title: "electrs"
-version: 0.9.9.1
+version: 0.9.11
 release-notes: |
-  * Add x86 build
-  * Expand version boundaries for bitcoind dependency
+  * Update upstream Electrs to v0.9.11
+  * Add compaction notification and one bug fix in the wrapper's health check
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
 upstream-repo: "https://github.com/romanz/electrs"
@@ -59,7 +59,7 @@ volumes:
 interfaces:
   electrum:
     name: Electrum Interface
-    description: Serves an electrum API for use with compatible wallets
+    description: DO NOT USE the Tor Address below, it won't work.  Instead, look in Electrs' PROPERTIES.
     tor-config:
       port-mapping:
         50001: "50001"
