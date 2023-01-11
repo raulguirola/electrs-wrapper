@@ -17,14 +17,14 @@ data:
     description: For scanning into wallets such as BlueWallet
     copyable: true
     qr: true
-    masked: true
+    masked: false
   Hostname:
     type: string
     value: $TOR_ADDRESS
     description: Hostname to input into wallet software such as Sparrow.
     copyable: true
     qr: false
-    masked: true
+    masked: false
   Port:
     type: string
     value: "50001"
