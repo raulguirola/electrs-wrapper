@@ -46,7 +46,7 @@ else
             echo "Catching up to blocks from bitcoind. This should take at most a day. Progress: $synced_height of $b_block_count blocks" >&2
             exit 61
         else
-            echo "Electrs RPC is not yet returning the sync status" >&2
+            echo "The electrs' Prometheus RPC is not yet returning the sync status" >&2
             exit 61
         fi
     elif [ -z "$curl_res" ]; then
@@ -55,7 +55,7 @@ else
             echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
             exit 61
         fi
-        echo "Synced to blockchain. Finalizing..." >&2
+        echo "The electrs' Prometheus RPC is not yet returning the sync status" >&2
         exit 61
     else
         exit 0
