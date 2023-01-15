@@ -40,6 +40,12 @@ else
         exit $error_code
     fi
 
+    compaction_res=$(tail -2 /data/db/bitcoin/LOG|head -1|grep "compaction_job\.cc"|wc -l)
+    if [[ $compaction_res -eq 1 ]] ; then
+        echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
+        exit 61
+    fi
+    
     synced_height=$(echo -e "$curl_res" | grep index_height | grep tip | awk '{ print $NF }')
     if [ -n "$synced_height" ] && [[ $synced_height -ge 0 ]] ; then
         if [[ $synced_height -lt $b_block_count ]]; then
@@ -49,14 +55,6 @@ else
             echo "The electrs' Prometheus RPC is not yet returning the sync status" >&2
             exit 61
         fi
-    elif [ -z "$curl_res" ]; then
-        compaction_res=$(tail -2 /data/db/bitcoin/LOG|head -1|grep "compaction_job\.cc"|wc -l)
-        if [[ $compaction_res -eq 1 ]] ; then
-            echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
-            exit 61
-        fi
-        echo "The electrs' Prometheus RPC is not yet returning the sync status" >&2
-        exit 61
     else
         exit 0
     fi
