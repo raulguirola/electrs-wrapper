@@ -7,10 +7,11 @@ if [ "$b_type" = "internal" ]; then
     b_host="bitcoind.embassy"
     b_username=$(yq e '.bitcoind.user' /data/start9/config.yaml)
     b_password=$(yq e '.bitcoind.password' /data/start9/config.yaml)
-elif [ "$b_type" = "internal-proxy" ]; then
-    b_host="btc-rpc-proxy.embassy"
-    b_username=$(yq e '.bitcoind.user' /data/start9/config.yaml)
-    b_password=$(yq e '.bitcoind.password' /data/start9/config.yaml)
+# Deprecating bitcoin rpc proxy:
+#elif [ "$b_type" = "internal-proxy" ]; then
+#    b_host="btc-rpc-proxy.embassy"
+#    b_username=$(yq e '.bitcoind.user' /data/start9/config.yaml)
+#    b_password=$(yq e '.bitcoind.password' /data/start9/config.yaml)
 else
     b_host=$(yq e '.bitcoind.connection-settings.address' /data/start9/config.yaml)
     b_username=$(yq e '.bitcoind.connection-settings.user' /data/start9/config.yaml)
@@ -51,10 +52,12 @@ else
         if [[ $synced_height -lt $b_block_count ]] ; then
             echo "Catching up to blocks from bitcoind. This should take at most a day. Progress: $synced_height of $b_block_count blocks" >&2
             exit 61
+        else
+            #Index is synced to tip
+            exit 0
+        fi
     elif [ -z "$synced_height" ] ; then
         echo "The electrs' Prometheus RPC is not yet returning the sync status" >&2
         exit 61
-    else
-        exit 0
     fi
 fi
