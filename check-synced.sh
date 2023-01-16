@@ -26,7 +26,7 @@ fi
 b_block_count=$(echo "$b_gbc_result" | yq e '.result' -)
 b_gbc_err=$(echo "$b_gbc_result" | yq e '.error' -)
 if [ "$b_block_count" = "null" ]; then
-    echo "Error ascertaining Bitcoin block count: $b_gbc_error"
+    echo "Error ascertaining Bitcoin block count: $b_gbc_error" >&2
     exit 60
 else
     #the netcat method below fetches metrics from the prometheus rpc, and querying :50001 doesn't work until electrs is synced, so we'll curl directly instead.
