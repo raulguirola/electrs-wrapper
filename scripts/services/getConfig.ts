@@ -94,7 +94,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           "DEBUG": "Debug",
           "TRACE": "Trace"
         },
-        "default": "INFO"
+        "default": "WARN"
       },
       "index-batch-size": {
         "type": "number",
