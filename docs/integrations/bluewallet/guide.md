@@ -4,7 +4,7 @@ You will need to be running Tor on your device.  Find guides to set this up here
 
 https://start9.com/latest/user-manual/connecting/connecting-tor/tor-os/index
 
-1. Select the Settings 'kebab' / elipses menu at the top right of the app
+1. Select the Settings 'kebab' / ellipsis menu at the top right of the app
 
 1. Select `Network`
 
