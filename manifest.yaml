@@ -3,7 +3,8 @@ title: "electrs"
 version: 0.9.11
 release-notes: |
   * Update upstream electrs to v0.9.11
-  * Add compaction notification and one bug fix in the wrapper's health check
+  * Add compaction notification logic and a bug fix in the wrapper's health check
+  * Update backups to use new eOS APIs
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
 upstream-repo: "https://github.com/romanz/electrs"
@@ -100,31 +101,9 @@ dependencies:
         type: script
 backup:
   create:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - create
-      - /mnt/backup
-      - /data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /data
+    type: script
   restore:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - restore
-      - /mnt/backup
-      - /data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /data
+    type: script
 migrations:
   from:
     "*":
