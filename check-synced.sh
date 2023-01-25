@@ -16,17 +16,28 @@ else
     b_username=$(yq e '.bitcoind.connection-settings.user' /data/start9/config.yaml)
     b_password=$(yq e '.bitcoind.connection-settings.password' /data/start9/config.yaml)
 fi
-b_gbc_result=$(curl -sS --user $b_username:$b_password --data-binary '{"jsonrpc": "1.0", "id": "sync-hck", "method": "getblockcount", "params": []}' -H 'content-type: text/plain;' http://$b_host:8332/ 2>&1)
+b_gbc_result=$(curl -sS --user $b_username:$b_password --data-binary '{"jsonrpc": "1.0", "id": "sync-hck", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://$b_host:8332/ 2>&1)
 error_code=$?
+b_gbc_error=$(echo $b_gbc_result | yq e '.error' -)
 if [[ $error_code -ne 0 ]]; then
     echo "Error contacting Bitcoin RPC: $b_gbc_result" >&2
     exit $error_code
+elif [ "$b_gbc_error" != "null" ] ; then
+    #curl gave a good json "result" but it could be an error like:
+    # '{"result":null,"error":{"code":-28,"message":"Verifying blocks…"},"id":"sync-hck"}'
+    # meaning bitcoin is not yet synced.  Display that "message" and exit:
+    echo "Bitcoin RPC returned error: $b_gbc_error" >&2
+    exit 60
 fi
 
-b_block_count=$(echo "$b_gbc_result" | yq e '.result' -)
-b_gbc_err=$(echo "$b_gbc_result" | yq e '.error' -)
+b_block_count=$(echo "$b_gbc_result" | yq e '.result.blocks' -)
+b_block_ibd=$(echo "$b_gbc_result" | yq e '.result.initialblockdownload' -)
 if [ "$b_block_count" = "null" ]; then
     echo "Error ascertaining Bitcoin block count: $b_gbc_error" >&2
+    exit 60
+elif [ "$b_block_ibd" != "false" ] ; then
+    b_block_hcount=$(echo "$b_gbc_result" | yq e '.result.headers' -)
+    echo "Bitcoin blockchain is not fully synced yet: $b_block_count of $b_block_hcount blocks" >&2
     exit 60
 else
     #Gather keys/values from prometheus rpc:
