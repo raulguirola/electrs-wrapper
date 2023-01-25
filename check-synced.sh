@@ -33,11 +33,12 @@ fi
 b_block_count=$(echo "$b_gbc_result" | yq e '.result.blocks' -)
 b_block_ibd=$(echo "$b_gbc_result" | yq e '.result.initialblockdownload' -)
 if [ "$b_block_count" = "null" ]; then
-    echo "Error ascertaining Bitcoin block count: $b_gbc_error" >&2
+    echo "Error ascertaining Bitcoin blockchain status: $b_gbc_error" >&2
     exit 60
 elif [ "$b_block_ibd" != "false" ] ; then
     b_block_hcount=$(echo "$b_gbc_result" | yq e '.result.headers' -)
-    echo "Bitcoin blockchain is not fully synced yet: $b_block_count of $b_block_hcount blocks" >&2
+    echo -n "Bitcoin blockchain is not fully synced yet: $b_block_count of $b_block_hcount blocks" >&2
+    echo " ($(expr ${b_block_count}00 / $b_block_hcount)%)" >&2
     exit 60
 else
     #Gather keys/values from prometheus rpc:
