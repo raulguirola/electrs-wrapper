@@ -23,7 +23,7 @@ if [[ $error_code -ne 0 ]]; then
     echo "Error contacting Bitcoin RPC: $b_gbc_result" >&2
     exit $error_code
 elif [ "$b_gbc_error" != "null" ] ; then
-    #curl gave a good json "result" but it could be an error like:
+    #curl returned ok, but the "good" result could be an error like:
     # '{"result":null,"error":{"code":-28,"message":"Verifying blocks…"},"id":"sync-hck"}'
     # meaning bitcoin is not yet synced.  Display that "message" and exit:
     echo "Bitcoin RPC returned error: $b_gbc_error" >&2
@@ -50,14 +50,21 @@ else
         exit $error_code
     fi
     
+    #Determine whether we are actively doing a database compaction:
     #compaction_res=$(echo -e "$features_res" | grep num-running-compactions | sed "s/\s$//g" | grep " [^0]$"|awk '{print $NF}'|head -1)
-    #^The prometheus RPC's num-running-compactions key doesn't seem to correspond to actual compaction events, so we'll determine compaction by another, dumber but accurate method:
-    compaction_res=$(tail -2 /data/db/bitcoin/LOG|head -1|grep "compaction_job\.cc"|wc -l)
-    if [[ $compaction_res -eq 1 ]] ; then
-        echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
-        exit 61
+    #^The prometheus RPC's num-running-compactions key doesn't seem to correspond to actual
+    # compaction events, so we'll determine compaction by another, dumber but accurate method:
+    chk_numlines=100000 #Look through the last 100,000 lines of the db LOG
+    log_file="/data/db/bitcoin/LOG"
+    tail_log="tail -$chk_numlines $log_file"
+    compaction_job=$($tail_log|grep EVENT_LOG|grep "ManualCompaction"|tail -1|cut -d" " -f7)
+    if [ -n "$compcation_job" ] ; then
+        compaction_job_is_done=$($tail_log|grep "\"job\": $compaction_job \"event\": \"compaction_finished\""|wc -l)
+        if [[ $compaction_job_is_done -eq 0 ]] ; then
+            echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
+            exit 61
+        fi
     fi
-    
     synced_height=$(echo -e "$curl_res" | grep index_height | grep tip | awk '{ print $NF }')
     if [ -n "$synced_height" ] && [[ $synced_height -ge 0 ]] ; then
         if [[ $synced_height -lt $b_block_count ]] ; then
