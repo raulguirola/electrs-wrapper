@@ -63,7 +63,7 @@ else
     if [ -n "$compaction_job" ] ; then
         compaction_job_is_done=$($tail_log|grep "\"job\": $compaction_job \"event\": \"compaction_finished\""|wc -l)
         if [[ $compaction_job_is_done -eq 0 ]] ; then
-            echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
+            echo "Finishing database compaction... This could take some hours depending on your hardware." >&2
             exit 61
         fi
     fi
