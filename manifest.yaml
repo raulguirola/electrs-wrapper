@@ -38,7 +38,7 @@ health-checks:
     system: false
     io-format: json
   synced:
-    name: Synced
+    name: Sync Status
     success-message: The indexes are built and the electrum interface is fully operational. You may now connect a wallet.
     type: docker
     image: main

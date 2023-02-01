@@ -16,6 +16,8 @@ else
     b_username=$(yq e '.bitcoind.connection-settings.user' /data/start9/config.yaml)
     b_password=$(yq e '.bitcoind.connection-settings.password' /data/start9/config.yaml)
 fi
+
+#Get blockchain info from the bitcoin rpc
 b_gbc_result=$(curl -sS --user $b_username:$b_password --data-binary '{"jsonrpc": "1.0", "id": "sync-hck", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://$b_host:8332/ 2>&1)
 error_code=$?
 b_gbc_error=$(echo $b_gbc_result | yq e '.error' -)
@@ -58,7 +60,7 @@ else
     log_file="/data/db/bitcoin/LOG"
     tail_log="tail -$chk_numlines $log_file"
     compaction_job=$($tail_log|grep EVENT_LOG|grep "ManualCompaction"|tail -1|cut -d" " -f7)
-    if [ -n "$compcation_job" ] ; then
+    if [ -n "$compaction_job" ] ; then
         compaction_job_is_done=$($tail_log|grep "\"job\": $compaction_job \"event\": \"compaction_finished\""|wc -l)
         if [[ $compaction_job_is_done -eq 0 ]] ; then
             echo "Finishing database compaction... This could take a some hours depending on your hardware." >&2
