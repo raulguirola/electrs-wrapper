@@ -23,25 +23,25 @@ error_code=$?
 b_gbc_error=$(echo $b_gbc_result | yq e '.error' -)
 if [[ $error_code -ne 0 ]]; then
     echo "Error contacting Bitcoin RPC: $b_gbc_result" >&2
-    exit $error_code
+    exit 61
 elif [ "$b_gbc_error" != "null" ] ; then
     #curl returned ok, but the "good" result could be an error like:
     # '{"result":null,"error":{"code":-28,"message":"Verifying blocks…"},"id":"sync-hck"}'
     # meaning bitcoin is not yet synced.  Display that "message" and exit:
     echo "Bitcoin RPC returned error: $b_gbc_error" >&2
-    exit 60
+    exit 61
 fi
 
 b_block_count=$(echo "$b_gbc_result" | yq e '.result.blocks' -)
 b_block_ibd=$(echo "$b_gbc_result" | yq e '.result.initialblockdownload' -)
 if [ "$b_block_count" = "null" ]; then
     echo "Error ascertaining Bitcoin blockchain status: $b_gbc_error" >&2
-    exit 60
+    exit 61
 elif [ "$b_block_ibd" != "false" ] ; then
     b_block_hcount=$(echo "$b_gbc_result" | yq e '.result.headers' -)
     echo -n "Bitcoin blockchain is not fully synced yet: $b_block_count of $b_block_hcount blocks" >&2
     echo " ($(expr ${b_block_count}00 / $b_block_hcount)%)" >&2
-    exit 60
+    exit 61
 else
     #Gather keys/values from prometheus rpc:
     curl_res=$(curl -sS localhost:4224)
@@ -49,7 +49,7 @@ else
     
     if [[ $error_code -ne 0 ]]; then
         echo "Error contacting the electrs Prometheus RPC" >&2
-        exit $error_code
+        exit 61
     fi
     
     #Determine whether we are actively doing a database compaction:
@@ -73,8 +73,16 @@ else
             echo "Catching up to blocks from bitcoind. This should take at most a day. Progress: $synced_height of $b_block_count blocks ($(expr ${synced_height}00 / $b_block_count)%)" >&2
             exit 61
         else
-            #Index is synced to tip
-            exit 0
+            #Check to make sure the electrs RPC is actually up and responding
+            features_res=$(echo '{"jsonrpc": "2.0", "method": "server.features", "params": ["", "1.4"], "id": 0}' | netcat -q 1 127.0.0.1 50001)
+            server_string=$(echo $featres_res | yq e '.result.server_version')
+            if [ -n "$server_string" ] ; then
+                #Index is synced to tip
+                exit 0
+            else
+                echo "electrs RPC is not responding."
+                exit 61
+            fi
         fi
     elif [ -z "$synced_height" ] ; then
         echo "The electrs Prometheus RPC is not yet returning the sync status" >&2
