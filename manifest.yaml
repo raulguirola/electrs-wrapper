@@ -1,9 +1,10 @@
 id: electrs
 title: "electrs"
-version: 0.9.9.1
+version: 0.9.11
 release-notes: |
-  * Add x86 build
-  * Expand version boundaries for bitcoind dependency
+  * Update upstream electrs to v0.9.11
+  * Add compaction notification logic and a bug fix in the wrapper's health check
+  * Update backups to use new eOS APIs
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
 upstream-repo: "https://github.com/romanz/electrs"
@@ -37,7 +38,7 @@ health-checks:
     system: false
     io-format: json
   synced:
-    name: Synced
+    name: Sync Status
     success-message: The indexes are built and the electrum interface is fully operational. You may now connect a wallet.
     type: docker
     image: main
@@ -59,7 +60,7 @@ volumes:
 interfaces:
   electrum:
     name: Electrum Interface
-    description: Serves an electrum API for use with compatible wallets
+    description: Do not use the URL below.  Instead, look in electrs' Properties section for your electrum server address.
     tor-config:
       port-mapping:
         50001: "50001"
@@ -79,7 +80,7 @@ dependencies:
   btc-rpc-proxy:
     version: ">=0.3.2.1 <0.4.0"
     requirement:
-      type: "opt-out"
+      type: "opt-in"
       how: Set "Bitcoin Core" to 'Bitcoin Core'"
     description: Provides bitcoin rpc interface needed for info about fees, blockchain, mempool, network, and transactions. Can also use bitcoind for rpc interface, or an external node for both.
     config:
@@ -100,31 +101,9 @@ dependencies:
         type: script
 backup:
   create:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - create
-      - /mnt/backup
-      - /data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /data
+    type: script
   restore:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - restore
-      - /mnt/backup
-      - /data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /data
+    type: script
 migrations:
   from:
     "*":

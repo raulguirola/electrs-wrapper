@@ -18,7 +18,7 @@ Note: You will need to be running Tor on your device, find guides to set this up
     
     ![Trezor Backends](./assets/trezor3.png "Trezor Backend Selection")
 
-1. Enter your electrs Tor address (found in your Embassy's electrs service page, under "Interfaces").  Remove the "http://" prefix, then add `:50001:t` at the end, to signify port 50001, TCP connection.  Click "Confirm."
+1. Enter your electrs `Quick Connect URL` (found in your Embassy's electrs service page, under "Properties").  Click "Confirm."
 
     ![Electrs Address](./assets/trezor4.png "Enter electrs address, port, and tcp setting")
 

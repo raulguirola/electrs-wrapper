@@ -10,7 +10,7 @@ Note: You will need to be running Tor on your device, find guides to set this up
 
     ![Electrum Server](./assets/sparrow1.png)
     
-1. Enter your electrs Tor address (found in your Embassy's electrs service page, under "Interfaces"), removing the "http://" prefix.  Enable "Use Proxy" and then enter "127.0.0.1" for the address and "9050" for the port.
+1. Enter your electrs Hostname and Port (found in your Embassy's electrs service page, under "Properties").  Enable "Use Proxy" and then enter "127.0.0.1" for the address and "9050" for the port.
 
     ![Server Setup](./assets/sparrow2.png)
 
