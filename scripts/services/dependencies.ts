@@ -59,6 +59,7 @@ const proxyChecks: Array<Check> = [
   },
   ...[
     "estimatesmartfee",
+    "getblock",
     "getblockchaininfo",
     "getblockcount",
     "getmempoolentry",

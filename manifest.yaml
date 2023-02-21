@@ -1,10 +1,9 @@
 id: electrs
 title: "electrs"
-version: 0.9.11
+version: 0.9.11.1
 release-notes: |
-  * Update upstream electrs to v0.9.11
-  * Add compaction notification logic and a bug fix in the wrapper's health check
-  * Update backups to use new eOS APIs
+  * Add missing `getblock` RPC call when a user is using BTC-RPC-Proxy
+  * A couple minor tweaks to wrapper package internals
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
 upstream-repo: "https://github.com/romanz/electrs"

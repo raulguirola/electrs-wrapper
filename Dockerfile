@@ -13,7 +13,12 @@ RUN cargo install --locked --path .
 
 FROM debian:buster-slim
 
-RUN apt update && apt install -y bash curl netcat tini wget
+RUN apt update && apt install -y ca-certificates
+
+#Let debian repos be fetched securely:
+RUN sed -i "s/http:\/\//https:\/\//g" /etc/apt/sources.list
+
+RUN apt update && apt upgrade -y && apt install -y bash curl netcat tini wget
 
 ARG PLATFORM
 ARG ARCH
