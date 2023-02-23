@@ -66,6 +66,7 @@ const proxyChecks: Array<Check> = [
     "getnetworkinfo",
     "getrawmempool",
     "getrawtransaction",
+    "sendrawtransaction",
 
   ].map(
     (operator): Check => ({
