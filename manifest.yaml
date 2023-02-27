@@ -1,8 +1,9 @@
 id: electrs
 title: "electrs"
-version: 0.9.11.1
+version: 0.9.12
 release-notes: |
-  * Add missing `getblock` RPC call when a user is using BTC-RPC-Proxy
+  * Update upstream electrs to [v0.9.12](https://github.com/romanz/electrs/blob/master/RELEASE-NOTES.md#0912-feb-25-2023)
+  * Enable missing `getblock` and `sendrawtransaction` RPC calls when a user is using BTC-RPC-Proxy
   * A couple minor tweaks to wrapper package internals
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
