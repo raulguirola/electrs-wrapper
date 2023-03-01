@@ -59,12 +59,14 @@ const proxyChecks: Array<Check> = [
   },
   ...[
     "estimatesmartfee",
+    "getblock",
     "getblockchaininfo",
     "getblockcount",
     "getmempoolentry",
     "getnetworkinfo",
     "getrawmempool",
     "getrawtransaction",
+    "sendrawtransaction",
 
   ].map(
     (operator): Check => ({
