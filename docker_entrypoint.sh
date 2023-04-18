@@ -2,9 +2,6 @@
 
 set -e
 
-echo 'db/' > /data/.backupignore
-echo 'core' >> /data/.backupignore
-
 TOR_ADDRESS=$(yq '.electrum-tor-address' /data/start9/config.yaml)
 
 cat << EOF > /data/start9/stats.yaml
