@@ -3,6 +3,7 @@ import { checkPortListening } from '@start9labs/start-sdk/lib/health/checkFns'
 import { ExpectedExports } from '@start9labs/start-sdk/lib/types'
 import { HealthReceipt } from '@start9labs/start-sdk/lib/health/HealthReceipt'
 import { Daemons } from '@start9labs/start-sdk/lib/mainFn/Daemons'
+import { hasInternal } from '../utils'
 import { tcpPort } from './interfaces'
 
 export const main: ExpectedExports.main = sdk.setupMain(
@@ -12,6 +13,12 @@ export const main: ExpectedExports.main = sdk.setupMain(
      */
     console.info('Starting electrs...')
 
+    const { nodes } = (await rtlConfig.read(effects))!
+
+    if (hasInternal(nodes, 'bitcoind')) {
+      await utils.mountDependencies(dependencyMounts.bitcoind)
+    }
+
     /**
      * ======================== Additional Health Checks (optional) ========================
      */
@@ -20,13 +27,6 @@ export const main: ExpectedExports.main = sdk.setupMain(
     /**
      * ======================== Daemons ========================
      */
-
-    const SEARXNG_SECRET = await effects.runCommand([
-      'openssl',
-      'rand',
-      '-hex',
-      '32',
-    ])
 
     return Daemons.of({
       effects,
@@ -45,7 +45,7 @@ export const main: ExpectedExports.main = sdk.setupMain(
               errorMessage: 'The Electrum server JSON RPC interface is not ready',
             }),
         },
-        requires: [],
+        requires: ['bitcoind'],
       })
   },
 )
