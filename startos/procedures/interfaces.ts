@@ -1,21 +1,21 @@
 import { sdk } from '../sdk'
 import { configSpec } from './config/spec'
 
-export const uiPort = 8080
-export const uiId = 'webui'
+export const rpcPort = 50001
+export const rpcId = 'rpc'
 
 export const setInterfaces = sdk.setupInterfaces(
   configSpec,
   async ({ effects, utils, input }) => {
     const multi = utils.host.multi('multi')
-    const multiOrigin = await multi.bindPort(uiPort, { protocol: 'http' })
+    const multiOrigin = await multi.bindPort(rpcPort, { protocol: '' }) //@TODO: json rpc raw tcp need to specify
     const multiInterface = utils.createInterface({
-      name: 'Web UI',
-      id: uiId,
-      description: 'The web user interface of SearXNG',
+      name: 'JSON RPC',
+      id: rpcId,
+      description: 'Electrum RPC Interface',
       hasPrimary: false,
       disabled: false,
-      ui: true,
+      ui: false,
       username: null,
       path: '',
       search: {},

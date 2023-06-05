@@ -4,10 +4,10 @@ import { manifest as bitcoindManifest } from 'bitcoind-startos/startos/manifest'
 export const dependencyMounts = sdk
   .setupDependencyMounts()
   .addPath({
-    name: 'dataDir',
+    name: 'bitcoinBlocks',
     manifest: bitcoindManifest,
     volume: 'main',
-    path: '/data/.bitcoin',
+    path: '/root/.bitcoin/blocks',
     readonly: true,
   })
   .build()

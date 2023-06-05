@@ -1,13 +1,17 @@
 import { sdk } from '../sdk'
 import { migrations } from './migrations'
 import { setInterfaces } from './interfaces'
-import { defaultYaml, yamlFile } from './config/file-models/settings.yml'
 
 const install = sdk.setupInstall(async ({ effects, utils }) => {
-  await yamlFile.write(defaultYaml, effects)
+  const rpcUser = 'electrs'
+  const rpcPassword = '' //@TODO: generate random password using bitcoin-rpcuath-js
+  await utils.vault.set('rpcUser', rpcUser)
+  await utils.vault.set('rpcPassword', rpcPassword)
 })
 
-const uninstall = sdk.setupUninstall(async ({ effects, utils }) => {})
+const uninstall = sdk.setupUninstall(async ({ effects, utils }) => {
+  //@TODO: delete auth entry from bitcoin core
+})
 
 export const { init, uninit } = sdk.setupInit(
   migrations,

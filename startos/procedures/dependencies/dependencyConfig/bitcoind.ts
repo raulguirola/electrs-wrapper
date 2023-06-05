@@ -1,6 +1,6 @@
 import { sdk } from '../../../sdk'
 import { configSpec } from '../../config/spec'
-import { configSpec as helloWorldSpec } from 'bitcoind-startos/startos/procedures/config/spec'
+import { configSpec as bitcoindSpec } from 'bitcoind-startos/startos/procedures/config/spec'
 
 /**
  * In this function, you establish rules for configuring a dependency
@@ -12,7 +12,7 @@ export const bitcoindConfig = sdk.DependencyConfig.of({
   remoteConfig: bitcoindSpec,
   dependencyConfig: async ({ effects, utils, localConfig, remoteConfig }) => {
     return {
-      rpcuser: 'electrs',
+      advanced: { pruningMode: 'disabled'},
     }
   },
 })
