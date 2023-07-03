@@ -1,4 +1,4 @@
-FROM rust:1.48.0-slim AS builder
+FROM rust:1.70.0-slim AS builder
 
 ARG VERSION
 
@@ -11,7 +11,7 @@ COPY ./electrs .
 
 RUN cargo install --locked --path .
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 RUN apt update && apt install -y ca-certificates
 
