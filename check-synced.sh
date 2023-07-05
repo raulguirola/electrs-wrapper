@@ -1,48 +1,52 @@
 #!/bin/bash
 
-set -e
-
-b_type=$(yq e '.bitcoind.type' /data/start9/config.yaml)
-if [ "$b_type" = "internal" ]; then
+DURATION=$(</dev/stdin)
+if (($DURATION <= 9000 )); then
+    exit 60
+else
+ set -e
+ 
+ b_type=$(yq e '.bitcoind.type' /data/start9/config.yaml)
+ if [ "$b_type" = "internal" ]; then
     b_host="bitcoind.embassy"
     b_username=$(yq e '.bitcoind.user' /data/start9/config.yaml)
     b_password=$(yq e '.bitcoind.password' /data/start9/config.yaml)
-elif [ "$b_type" = "internal-proxy" ]; then
+ elif [ "$b_type" = "internal-proxy" ]; then
     b_host="btc-rpc-proxy.embassy"
     b_username=$(yq e '.bitcoind.user' /data/start9/config.yaml)
     b_password=$(yq e '.bitcoind.password' /data/start9/config.yaml)
-else
+ else
     b_host=$(yq e '.bitcoind.connection-settings.address' /data/start9/config.yaml)
     b_username=$(yq e '.bitcoind.connection-settings.user' /data/start9/config.yaml)
     b_password=$(yq e '.bitcoind.connection-settings.password' /data/start9/config.yaml)
-fi
-
-#Get blockchain info from the bitcoin rpc
-b_gbc_result=$(curl -sS --user $b_username:$b_password --data-binary '{"jsonrpc": "1.0", "id": "sync-hck", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://$b_host:8332/ 2>&1)
-error_code=$?
-b_gbc_error=$(echo $b_gbc_result | yq e '.error' -)
-if [[ $error_code -ne 0 ]]; then
+ fi
+ 
+ #Get blockchain info from the bitcoin rpc
+ b_gbc_result=$(curl -sS --user $b_username:$b_password --data-binary '{"jsonrpc": "1.0", "id": "sync-hck", "method": "getblockchaininfo", "params": []}' -H 'content-type: text/plain;' http://$b_host:8332/ 2>&1)
+ error_code=$?
+ b_gbc_error=$(echo $b_gbc_result | yq e '.error' -)
+ if [[ $error_code -ne 0 ]]; then
     echo "Error contacting Bitcoin RPC: $b_gbc_result" >&2
     exit 61
-elif [ "$b_gbc_error" != "null" ] ; then
+ elif [ "$b_gbc_error" != "null" ] ; then
     #curl returned ok, but the "good" result could be an error like:
     # '{"result":null,"error":{"code":-28,"message":"Verifying blocks…"},"id":"sync-hck"}'
     # meaning bitcoin is not yet synced.  Display that "message" and exit:
     echo "Bitcoin RPC returned error: $b_gbc_error" >&2
     exit 61
-fi
+ fi
 
-b_block_count=$(echo "$b_gbc_result" | yq e '.result.blocks' -)
-b_block_ibd=$(echo "$b_gbc_result" | yq e '.result.initialblockdownload' -)
-if [ "$b_block_count" = "null" ]; then
+ b_block_count=$(echo "$b_gbc_result" | yq e '.result.blocks' -)
+ b_block_ibd=$(echo "$b_gbc_result" | yq e '.result.initialblockdownload' -)
+ if [ "$b_block_count" = "null" ]; then
     echo "Error ascertaining Bitcoin blockchain status: $b_gbc_error" >&2
     exit 61
-elif [ "$b_block_ibd" != "false" ] ; then
+ elif [ "$b_block_ibd" != "false" ] ; then
     b_block_hcount=$(echo "$b_gbc_result" | yq e '.result.headers' -)
     echo -n "Bitcoin blockchain is not fully synced yet: $b_block_count of $b_block_hcount blocks" >&2
     echo " ($(expr ${b_block_count}00 / $b_block_hcount)%)" >&2
     exit 61
-else
+ else
     #Gather keys/values from prometheus rpc:
     curl_res=$(curl -sS localhost:4224)
     error_code=$?
@@ -80,7 +84,7 @@ else
                 #Index is synced to tip
                 exit 0
             else
-                echo "electrs RPC is not responding."
+                echo "electrs RPC is not responding." >&2
                 exit 61
             fi
         fi
@@ -88,4 +92,5 @@ else
         echo "The electrs Prometheus RPC is not yet returning the sync status" >&2
         exit 61
     fi
+ fi
 fi

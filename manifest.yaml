@@ -1,9 +1,10 @@
 id: electrs
 title: "electrs"
-version: 0.9.14
+version: 0.9.14.1
 release-notes: |
   * Update upstream electrs to [v0.9.14](https://github.com/romanz/electrs/blob/master/RELEASE-NOTES.md#0914-jun-10-2023)
   * Update Docker image to bullseye-slim
+  * Disable BTC-PRC-Proxy optional dependency
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
 upstream-repo: "https://github.com/romanz/electrs"
@@ -70,8 +71,7 @@ interfaces:
     ui: false
     protocols:
       - tcp
-      - http
-      - electrum
+      - json-rpc
 alerts:
   install: "INSTABILITY WARNING: Electrs uses up to 1GB of RAM when syncing. Please make sure you have at least this much free RAM before starting Electrs, or you will cause your system to become unresponsive! This is especially risky if running alongside Mastodon on a 4GB system!"
   start: "INSTABILITY WARNING: Electrs uses up to 1GB of RAM when syncing. Please make sure you have at least this much free RAM before starting Electrs, or you will cause your system to become unresponsive! This is especially risky if running alongside Mastodon on a 4GB system!"
@@ -88,7 +88,7 @@ dependencies:
       auto-configure:
         type: script
   bitcoind:
-    version: ">=0.21.1.2 <26.0.0"
+    version: ">=0.21.1.2 <27.99.99"
     requirement:
       type: "opt-out"
       how: Set "Bitcoin Core" type to "External"
