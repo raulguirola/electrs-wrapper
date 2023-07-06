@@ -16,60 +16,6 @@ const matchBitcoindConfig = shape({
   }),
 });
 
-const bitcoindChecks: Array<Check> = [
-  {
-    currentError(config) {
-      if (!matchBitcoindConfig.test(config)) {
-        return "Config is not the correct shape";
-      }
-      if (!config.rpc.enable) {
-        return "Must have RPC enabled";
-      }
-      return;
-    },
-    fix(config) {
-      if (!matchBitcoindConfig.test(config)) {
-        return;
-      }
-      config.rpc.enable = true;
-    },
-  },
-  {
-    currentError(config) {
-      if (!matchBitcoindConfig.test(config)) {
-        return "Config is not the correct shape";
-      }
-      if (!config.advanced.peers.listen) {
-        return "Must have peer interface enabled";
-      }
-      return;
-    },
-    fix(config) {
-      if (!matchBitcoindConfig.test(config)) {
-        return;
-      }
-      config.advanced.peers.listen = true;
-    },
-  },
-  {
-    currentError(config) {
-      if (!matchBitcoindConfig.test(config)) {
-        return "Config is not the correct shape";
-      }
-      if (config.advanced.pruning.mode !== "disabled") {
-        return "Pruning must be disabled (must be an archival node)";
-      }
-      return;
-    },
-    fix(config) {
-      if (!matchBitcoindConfig.test(config)) {
-        return;
-      }
-      config.advanced.pruning.mode = "disabled";
-    },
-  },
-];
-
 export const dependencies: T.ExpectedExports.dependencies = {
   bitcoind: {
     // deno-lint-ignore require-await
@@ -80,6 +26,9 @@ export const dependencies: T.ExpectedExports.dependencies = {
       }
       if (!config.rpc.enable) {
         return { error: "Must have RPC enabled" };
+      }
+      if (!config.advanced.peers.listen) {
+        return "Must have peer interface enabled";
       }
       if (config.advanced.pruning.mode !== "disabled") {
         return { error: "Pruning must be disabled (must be an archival node)" };
@@ -94,6 +43,7 @@ export const dependencies: T.ExpectedExports.dependencies = {
       effects.info("autoconfigure bitcoind");
       const config = matchBitcoindConfig.unsafeCast(configInput);
       config.rpc.enable = true;
+      config.advanced.peers.listen = true;
       config.advanced.pruning.mode = "disabled";
       if (config.rpc.advanced.threads < 4) {
         config.rpc.advanced.threads = 4;
