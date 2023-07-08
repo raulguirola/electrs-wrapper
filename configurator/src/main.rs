@@ -53,8 +53,6 @@ enum BitcoinCoreConfig {
     #[serde(rename_all = "kebab-case")]
     Internal { user: String, password: String },
     #[serde(rename_all = "kebab-case")]
-    InternalProxy { user: String, password: String },
-    #[serde(rename_all = "kebab-case")]
     External {
         #[serde(deserialize_with = "deserialize_parse")]
         host: Uri,
@@ -113,15 +111,6 @@ fn main() -> Result<(), anyhow::Error> {
                 let hostname = format!("{}", "bitcoind.embassy");
                 (user, password, hostname.clone(), 8332, hostname, 8333)
             }
-            BitcoinCoreConfig::InternalProxy { user, password } => (
-                user,
-                password,
-                format!("{}", "btc-rpc-proxy.embassy"),
-                8332,
-                // use bitcoin p2p interface. this requires bitcoind to be defined in dependencies.yaml
-                format!("{}", "bitcoind.embassy"),
-                8333,
-            ),
             BitcoinCoreConfig::External {
                 host,
                 rpc_user,

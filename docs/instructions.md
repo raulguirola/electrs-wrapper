@@ -13,9 +13,3 @@ Once your electrum server is synced, it will start listening for subscriptions f
 # Configuration
 
 Electrs on the Embassy requires a fully synced archival Bitcoin Core node as a source for blockchain data. It uses both the RPC interface and the peer interface of `bitcoind` in order to function. This requirement will be automatically enforced by EmbassyOS.
-
-**Bitcoin Core vs Bitcoin Proxy**
-
-If you choose Bitcoin Proxy as your blockchain source, when Electrum makes RPC requests, these will go through Bitcoin Proxy instead of directly to Bitcoin Core. This allows you to control access to your bitcoin node by Electrs and any wallets that are using it.
-
-Note that if you use Proxy as your RPC server, your internal Bitcoin Core node will still be needed as Electrs pulls data from the bitcoin p2p protocol as well, and Proxy does not support serving data via the bitcoin p2p protocol.

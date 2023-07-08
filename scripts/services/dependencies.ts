@@ -1,6 +1,6 @@
 import { types as T, matches } from "../deps.ts";
 
-const { shape, number, boolean } = matches;
+const { shape, number, boolean, string } = matches;
 
 const matchBitcoindConfig = shape({
   rpc: shape({
@@ -32,7 +32,7 @@ export const dependencies: T.ExpectedExports.dependencies = {
         return { error: "Must have RPC enabled" };
       }
       if (!config.advanced.peers.listen) {
-        return "Must have peer interface enabled";
+        return { error: "Must have peer interface enabled" };
       }
       if (config.advanced.pruning.mode !== "disabled") {
         return { error: "Pruning must be disabled (must be an archival node)" };
