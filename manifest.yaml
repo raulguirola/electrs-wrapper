@@ -80,7 +80,7 @@ dependencies:
     version: ">=0.21.1.2 <27.99.99"
     requirement:
       type: "required"
-    description: Needed for peer interface and rpc interface. Can also use btc-rpc-proxy for rpc interface, or an external node for both.
+    description: Needed for peer interface and rpc interface.
     config:
       check:
         type: script
