@@ -13,7 +13,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
   bitcoind: {
     type: "union",
     name: "Bitcoin Core",
-    description: "The Bitcoin Core node to connect to",
+    description: "The Bitcoin Core node for electrs to connect to",
     tag: {
       id: "type",
       name: "Type",
@@ -52,7 +52,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
   advanced: {
     type: "object",
     name: "Advanced",
-    description: "Advanced settings for Bitcoin Proxy",
+    description: "Advanced settings for electrs",
     spec: {
       "log-filters": {
         type: "enum",

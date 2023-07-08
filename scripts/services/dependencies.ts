@@ -13,14 +13,18 @@ const matchBitcoindConfig = shape({
     peers: shape({
       listen: boolean,
     }),
+    pruning: shape({
+      mode: string,
+    }),
   }),
 });
 
 export const dependencies: T.ExpectedExports.dependencies = {
   bitcoind: {
     // deno-lint-ignore require-await
-    async check(effects, config) {
+    async check(effects, configInput) {
       effects.info("check bitcoind");
+      const config = matchBitcoindConfig.unsafeCast(configInput);
       if (!matchBitcoindConfig.test(config)) {
         return { error: "Bitcoind config is not the correct shape" };
       }
@@ -38,6 +42,7 @@ export const dependencies: T.ExpectedExports.dependencies = {
       }
       return { result: null };
     },
+
     // deno-lint-ignore require-await
     async autoConfigure(effects, configInput) {
       effects.info("autoconfigure bitcoind");

@@ -90,8 +90,7 @@ dependencies:
   bitcoind:
     version: ">=0.21.1.2 <27.99.99"
     requirement:
-      type: "opt-out"
-      how: Set "Bitcoin Core" type to "External"
+      type: "required"
     description: Needed for peer interface and rpc interface. Can also use btc-rpc-proxy for rpc interface, or an external node for both.
     config:
       check:
