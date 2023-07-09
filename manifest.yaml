@@ -1,9 +1,10 @@
 id: electrs
 title: "electrs"
-version: 0.9.14
+version: 0.9.14.1
 release-notes: |
   * Update upstream electrs to [v0.9.14](https://github.com/romanz/electrs/blob/master/RELEASE-NOTES.md#0914-jun-10-2023)
   * Update Docker image to bullseye-slim
+  * Disable BTC-PRC-Proxy optional dependency
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/electrs-wrapper"
 upstream-repo: "https://github.com/romanz/electrs"
@@ -70,29 +71,16 @@ interfaces:
     ui: false
     protocols:
       - tcp
-      - http
-      - electrum
+      - json-rpc
 alerts:
   install: "INSTABILITY WARNING: Electrs uses up to 1GB of RAM when syncing. Please make sure you have at least this much free RAM before starting Electrs, or you will cause your system to become unresponsive! This is especially risky if running alongside Mastodon on a 4GB system!"
   start: "INSTABILITY WARNING: Electrs uses up to 1GB of RAM when syncing. Please make sure you have at least this much free RAM before starting Electrs, or you will cause your system to become unresponsive! This is especially risky if running alongside Mastodon on a 4GB system!"
 dependencies:
-  btc-rpc-proxy:
-    version: ">=0.3.2.1 <0.4.0"
-    requirement:
-      type: "opt-in"
-      how: Set "Bitcoin Core" to 'Bitcoin Core'"
-    description: Provides bitcoin rpc interface needed for info about fees, blockchain, mempool, network, and transactions. Can also use bitcoind for rpc interface, or an external node for both.
-    config:
-      check:
-        type: script
-      auto-configure:
-        type: script
   bitcoind:
-    version: ">=0.21.1.2 <26.0.0"
+    version: ">=0.21.1.2 <27.99.99"
     requirement:
-      type: "opt-out"
-      how: Set "Bitcoin Core" type to "External"
-    description: Needed for peer interface and rpc interface. Can also use btc-rpc-proxy for rpc interface, or an external node for both.
+      type: "required"
+    description: Needed for peer interface and rpc interface.
     config:
       check:
         type: script

@@ -1,13 +1,16 @@
-import {
-  compat,
-  types as T,
-} from "../deps.ts";
+import { compat, types as T } from "../deps.ts";
 
-// deno-lint-ignore no-explicit-any
-export const setConfig: T.ExpectedExports.setConfig = async (effects, input: any) => {
+export const setConfig: T.ExpectedExports.setConfig = async (
+  effects: T.Effects,
+  input
+) => {
+  // deno-lint-ignore no-explicit-any
+  const newConfig = input as any;
 
-  const depBitcoin: T.DependsOn = input?.bitcoind?.type === "internal" || input?.bitcoind?.type === "internal-proxy" ? { bitcoind: ["synced"] } : {}
+  const dependsOnBitcoind: T.DependsOn =
+    newConfig?.bitcoind?.type === "internal" ? { bitcoind: [] } : {};
+
   return await compat.setConfig(effects, input, {
-    ...depBitcoin
+    ...dependsOnBitcoind,
   });
-}
+};
