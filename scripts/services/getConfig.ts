@@ -22,7 +22,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
           target: "config",
           multi: false,
           selector: "internal",
-        }
+        },
         user: {
           type: "pointer",
           name: "RPC Username",
