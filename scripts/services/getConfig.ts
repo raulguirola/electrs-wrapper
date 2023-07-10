@@ -11,21 +11,18 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
     interface: "electrum",
   },
   bitcoind: {
-    type: "union",
-    name: "Bitcoin Core",
-    description: "The Bitcoin Core node for electrs to connect to",
-    tag: {
-      id: "type",
-      name: "Type",
-      "variant-names": {
-        internal: "Bitcoin Core",
-      },
-      description:
-        "Options<ul><li>Bitcoin Core: the Bitcoin Core node installed on your Server</li></ul>",
-    },
-    default: "internal",
     variants: {
       internal: {
+        type: {
+          type: "pointer",
+          name: "Bitcoin RPC Type"
+          description: "The Bitcoin RPC isntance to connect to",
+          subtype: "package",
+          "package-id": "bitcoind",
+          target: "config",
+          multi: false,
+          selector: "internal",
+        }
         user: {
           type: "pointer",
           name: "RPC Username",
