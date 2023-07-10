@@ -15,7 +15,7 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
       internal: {
         type: {
           type: "pointer",
-          name: "Bitcoin RPC Type"
+          name: "Bitcoin RPC Type",
           description: "The Bitcoin RPC isntance to connect to",
           subtype: "package",
           "package-id": "bitcoind",
