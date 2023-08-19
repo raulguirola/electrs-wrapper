@@ -8,11 +8,11 @@ Caution: This will add your Electrum server, but if you want to ONLY connect to 
 
    ![Select Server](./assets/electrum0.png)
 
-1. On the following screen, uncheck "Select server automatically," and paste in your electrs `Quick Connect URL` (found in the StartOS web interface, under Services > Electrs > Properties). Then click "Next."
+1. On the following screen, uncheck "Select server automatically," and paste in your electrs `Quick Connect URL` (found in the StartOS web interface, under Services > Electrs > Properties).
 
    ![Server Setup](./assets/electrum2.png)
 
-1. Select "Use Tor" and "Use Proxy" and enter "127.0.0.1" for the address and 9050 for the port. Click "Next."
+1. Go to the "Proxy" tab and select "Use Tor proxy at port 9050". Then, select "Use Proxy" and enter "127.0.0.1" for the address and 9050 for the port. Click "Next."
 
    ![Enable Tor Proxy](./assets/electrum3.png)
 
